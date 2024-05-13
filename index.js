@@ -32,7 +32,7 @@ class TestElement extends LitElement {
   render() {
     return html`
       <button @click=${() => (this.editing = !this.editing)}>
-        toggle editing
+        ${this.editing ? "READ" : "EDIT"}
       </button>
       <serlo-editor
         mode=${this.editing ? "write" : "read"}
@@ -42,4 +42,5 @@ class TestElement extends LitElement {
     `;
   }
 }
+
 customElements.define("test-element", TestElement);
