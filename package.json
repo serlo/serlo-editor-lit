@@ -4,7 +4,7 @@
     "start": "wds --watch --port 3000"
   },
   "dependencies": {
-    "@serlo/editor-web-component": "^0.0.4",
+    "@serlo/editor-web-component": "^0.0.7",
     "lit": "^3.1.3"
   },
   "devDependencies": {

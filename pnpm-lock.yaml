@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@serlo/editor-web-component':
-        specifier: ^0.0.4
-        version: 0.0.4
+        specifier: ^0.0.7
+        version: 0.0.7
       lit:
         specifier: ^3.1.3
         version: 3.1.3
@@ -141,13 +141,16 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@serlo/editor-web-component@0.0.4':
-    resolution: {integrity: sha512-uS0G6N9KpUQ9DQVxM2im7r4Dx416LVStdMldFS4vBUymLUVL2HwfeoAW+roNDEnbhVq/OYMKTG8Dn4sbc6XSrg==}
-    engines: {node: ^18.0.0}
+  '@serlo/editor-web-component@0.0.7':
+    resolution: {integrity: sha512-RReaXjjcvbLPS19AIdKgcHDcqC3QL058kJGdK05nX7EVDAK4JTfOF4ABmfw/N5qLflbFWpSJGF+tdJVP7FAsyw==}
+    engines: {node: '>=20.0.0'}
 
-  '@serlo/editor@0.6.0-beta.17':
-    resolution: {integrity: sha512-YAcJ8q0HD7l2kp1owNjoyOr2jpkggtpHGc7iwq74Sn4HLdsBDH33nqUY7C7KO8yt4KzfSVwXAHHg1jwRHt3Oeg==}
-    engines: {node: ^20.0.0}
+  '@serlo/editor@0.7.0':
+    resolution: {integrity: sha512-zov6z1Xk7Lh8eAkc1AzkzkHK9AN+R34eb0Vlxe39TYfJkGD1QSo6o+zhiTqo+ghv2s+YGhYBQ74iRPA57SE1Gg==}
+    engines: {node: '>=20.0.0'}
+
+  '@serlo/katex-styles@1.0.1':
+    resolution: {integrity: sha512-vWSJbElDa1caymxMAatOEI9KyiWgxLk5o01kP4CDabawlne0qk7tazdWIfkeSjqia5ZWthMWQW6aDJcv/qZYYg==}
 
   '@types/accepts@1.3.7':
     resolution: {integrity: sha512-Pay9fq2lM2wXPWbteBsRAGiWH2hig4ZE2asK+mm7kUzlxRTfL961rj89I6zV/E3PcIkDqyuBEcMxFT7rccugeQ==}
@@ -695,9 +698,6 @@ packages:
   scheduler@0.23.2:
     resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
 
-  serlo-katex-styles@1.0.0:
-    resolution: {integrity: sha512-iDyFuhC5vEMEP9+JdHka+yp9dA+x3VAlcJ6mf7aotrOUQUT3ibU/8UC/0jtHwoL/Yqd64mI4VH+xhlS7F/0m1g==}
-
   setprototypeof@1.1.0:
     resolution: {integrity: sha512-BvE/TwpZX4FXExxOxZyRGQQv651MSwmWKZGqvmPcRIjDqWub67kTKuIMx43cZZrS/cBBzwBcNDWoFxt2XEFIpQ==}
 
@@ -886,17 +886,19 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.17.2':
     optional: true
 
-  '@serlo/editor-web-component@0.0.4':
+  '@serlo/editor-web-component@0.0.7':
     dependencies:
-      '@serlo/editor': 0.6.0-beta.17
+      '@serlo/editor': 0.7.0
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
 
-  '@serlo/editor@0.6.0-beta.17':
+  '@serlo/editor@0.7.0':
     dependencies:
+      '@serlo/katex-styles': 1.0.1
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
-      serlo-katex-styles: 1.0.0
+
+  '@serlo/katex-styles@1.0.1': {}
 
   '@types/accepts@1.3.7':
     dependencies:
@@ -1498,8 +1500,6 @@ snapshots:
   scheduler@0.23.2:
     dependencies:
       loose-envify: 1.4.0
-
-  serlo-katex-styles@1.0.0: {}
 
   setprototypeof@1.1.0: {}
 
