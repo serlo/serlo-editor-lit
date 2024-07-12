@@ -3,6 +3,56 @@ import { LitElement, html } from "lit";
 
 customElements.define("serlo-editor", EditorWebComponent);
 
+// const initialExampleState = {
+//   plugin: "rows",
+//   state: [
+//     {
+//       plugin: "multimedia",
+//       state: {
+//         explanation: {
+//           plugin: "rows",
+//           state: [
+//             {
+//               plugin: "text",
+//               state: [
+//                 {
+//                   type: "p",
+//                   children: [
+//                     {
+//                       text: "example text",
+//                     },
+//                   ],
+//                 },
+//               ],
+//             },
+//           ],
+//         },
+//         multimedia: {
+//           plugin: "image",
+//           state: {
+//             src: "",
+//             caption: {
+//               plugin: "text",
+//               state: [
+//                 {
+//                   type: "p",
+//                   children: [
+//                     {
+//                       text: "",
+//                     },
+//                   ],
+//                 },
+//               ],
+//             },
+//           },
+//         },
+//         illustrating: true,
+//         width: 50,
+//       },
+//     },
+//   ],
+// };
+
 const initialExampleState = {
   plugin: "rows",
   state: [
@@ -51,6 +101,7 @@ class TestElement extends LitElement {
   }
 
   render() {
+    // testing-secret=${"VJN8pHhqVj8RtO+TfY2/Ka1JN4JdH/oSOAdPHz5a"}
     return html`
       <button @click=${() => (this.editing = !this.editing)}>
         ${this.editing ? "READ" : "EDIT"}
