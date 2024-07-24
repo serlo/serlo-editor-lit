@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@serlo/editor-web-component':
-        specifier: ^0.2.3
-        version: 0.2.3
+        specifier: ^0.3.0
+        version: 0.3.0
       lit:
         specifier: ^3.1.3
         version: 3.1.3
@@ -141,8 +141,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@serlo/editor-web-component@0.2.3':
-    resolution: {integrity: sha512-GAhcQoN+jWYFJbNzN29CJCQJpmW28XHLOG3zxs+k9E5ANtyAPlrgr12BB/V+hL1Tki52RJ2YQJcNVKMBrvKepA==}
+  '@serlo/editor-web-component@0.3.0':
+    resolution: {integrity: sha512-9qNgKDK6TFnYVzFbRO99Ol7X8rI4iWctXIkyEpT+CvSuiHoqQgnL61r+TW0qj9DBCp7Tr70jVB0Jy9C46OrQIw==}
     engines: {node: '>=20.0.0'}
 
   '@types/accepts@1.3.7':
@@ -863,7 +863,7 @@ snapshots:
   '@rollup/rollup-win32-x64-msvc@4.17.2':
     optional: true
 
-  '@serlo/editor-web-component@0.2.3': {}
+  '@serlo/editor-web-component@0.3.0': {}
 
   '@types/accepts@1.3.7':
     dependencies:
