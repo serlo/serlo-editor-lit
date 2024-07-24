@@ -79,6 +79,12 @@ class TestElement extends LitElement {
     this.editing = false;
   }
 
+  // Render in light mode. Override this and set use-shadow-dom to true if you
+  // want to render the lit component and the editor within the Shadow DOM.
+  createRenderRoot() {
+    return this;
+  }
+
   getCurrentEditorState() {
     const editor = this.shadowRoot.querySelector("serlo-editor");
     if (editor) {
@@ -101,7 +107,6 @@ class TestElement extends LitElement {
   }
 
   render() {
-    // testing-secret=${"VJN8pHhqVj8RtO+TfY2/Ka1JN4JdH/oSOAdPHz5a"}
     return html`
       <button @click=${() => (this.editing = !this.editing)}>
         ${this.editing ? "READ" : "EDIT"}
@@ -113,6 +118,7 @@ class TestElement extends LitElement {
       <button @click=${this.redo.bind(this)}>Redo</button>
 
       <serlo-editor
+        use-shadow-dom=${true}
         mode=${this.editing ? "write" : "read"}
         initial-state=${JSON.stringify(initialExampleState)}
         @state-changed=${(e) => console.log("new state", e.detail)}
