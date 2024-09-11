@@ -1,6 +1,7 @@
-import { EditorWebComponent } from "@serlo/editor-web-component";
+import { EditorWebComponent, AllPlugins } from "@serlo/editor-web-component";
 import { LitElement, html } from "lit";
 
+console.log("AllPlugins", AllPlugins);
 customElements.define("serlo-editor", EditorWebComponent);
 
 // const initialExampleState = {
@@ -72,35 +73,70 @@ const initialExampleState = {
 class TestElement extends LitElement {
   static properties = {
     editing: { type: Boolean },
+    isRenderedInShadowRoot: true,
+    editorState: { type: Object },
+    selectedPlugin: { type: String },
   };
 
   constructor() {
     super();
     this.editing = false;
+    this.editorState = initialExampleState;
+    this.selectedPlugin = "text";
   }
 
-  // Render in light mode. Override this and set use-shadow-dom to true if you
-  // want to render the lit component and the editor within the Shadow DOM.
+  // Render in light mode. Override this if you want to render the lit component
+  // and the editor within the Shadow DOM.
   createRenderRoot() {
+    this.isRenderedInShadowRoot = false;
     return this;
   }
 
-  getCurrentEditorState() {
-    const editor = this.shadowRoot.querySelector("serlo-editor");
+  getEditor() {
+    return this.isRenderedInShadowRoot
+      ? this.shadowRoot.querySelector("serlo-editor")
+      : this.querySelector("serlo-editor");
+  }
+
+  writeCurrentEditorState() {
+    const editor = this.getEditor();
     if (editor) {
       console.log("Current state:", editor.currentState);
+      this.editorState = editor.currentState;
     }
   }
 
+  handleStateChange(event) {
+    console.log("Editor state updated:", event.detail);
+  }
+
+  handlePluginChange(event) {
+    this.selectedPlugin = event.target.value;
+    this.editing = true;
+    this.updateEditorStateWithInitialPlugin();
+  }
+
+  updateEditorStateWithInitialPlugin() {
+    const selectedPluginConfig = AllPlugins[this.selectedPlugin];
+
+    // Fallback if initialState is not defined for the selected plugin
+    const pluginInitialState = selectedPluginConfig?.initialState || {
+      plugin: this.selectedPlugin,
+      state: [],
+    };
+
+    this.editorState = pluginInitialState;
+  }
+
   undo() {
-    const editor = this.shadowRoot.querySelector("serlo-editor");
+    const editor = this.getEditor();
     if (editor && editor.history) {
       editor.history.dispatchUndo();
     }
   }
 
   redo() {
-    const editor = this.shadowRoot.querySelector("serlo-editor");
+    const editor = this.getEditor();
     if (editor && editor.history) {
       editor.history.dispatchRedo();
     }
@@ -111,17 +147,26 @@ class TestElement extends LitElement {
       <button @click=${() => (this.editing = !this.editing)}>
         ${this.editing ? "READ" : "EDIT"}
       </button>
-      <button @click=${this.getCurrentEditorState.bind(this)}>
-        Get Current State
+      <button @click=${this.writeCurrentEditorState.bind(this)}>
+        Write current State
       </button>
       <button @click=${this.undo.bind(this)}>Undo</button>
       <button @click=${this.redo.bind(this)}>Redo</button>
+      <select @change=${this.handlePluginChange.bind(this)}>
+        ${Object.values(AllPlugins).map(
+          ({ type, de: { name } }) => html`
+            <option value="${type}" ?selected=${type === this.selectedPlugin}>
+              ${name}
+            </option>
+          `
+        )}
+      </select>
 
       <serlo-editor
-        use-shadow-dom=${true}
+        use-shadow-dom=${!this.isRenderedInShadowRoot}
         mode=${this.editing ? "write" : "read"}
-        initial-state=${JSON.stringify(initialExampleState)}
-        @state-changed=${(e) => console.log("new state", e.detail)}
+        initial-state=${JSON.stringify(this.editorState)}
+        @state-changed=${this.handleStateChange.bind(this)}
       ></serlo-editor>
     `;
   }
