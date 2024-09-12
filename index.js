@@ -1,7 +1,11 @@
-import { EditorWebComponent, AllPlugins } from "@serlo/editor-web-component";
+import {
+  EditorWebComponent,
+  educationalElements,
+  EducationalElement,
+} from "@serlo/editor-web-component";
 import { LitElement, html } from "lit";
 
-console.log("AllPlugins", AllPlugins);
+console.log("EducationalElements", { educationalElements, EducationalElement });
 customElements.define("serlo-editor", EditorWebComponent);
 
 // const initialExampleState = {
@@ -82,7 +86,7 @@ class TestElement extends LitElement {
     super();
     this.editing = false;
     this.editorState = initialExampleState;
-    this.selectedPlugin = "text";
+    this.selectedPlugin = EducationalElement.Text;
   }
 
   // Render in light mode. Override this if you want to render the lit component
@@ -117,7 +121,7 @@ class TestElement extends LitElement {
   }
 
   updateEditorStateWithInitialPlugin() {
-    const selectedPluginConfig = AllPlugins[this.selectedPlugin];
+    const selectedPluginConfig = educationalElements[this.selectedPlugin];
 
     // Fallback if initialState is not defined for the selected plugin
     const pluginInitialState = selectedPluginConfig?.initialState || {
@@ -153,7 +157,7 @@ class TestElement extends LitElement {
       <button @click=${this.undo.bind(this)}>Undo</button>
       <button @click=${this.redo.bind(this)}>Redo</button>
       <select @change=${this.handlePluginChange.bind(this)}>
-        ${Object.values(AllPlugins).map(
+        ${Object.values(educationalElements).map(
           ({ type, de: { name } }) => html`
             <option value="${type}" ?selected=${type === this.selectedPlugin}>
               ${name}
