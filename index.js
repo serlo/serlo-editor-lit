@@ -1,11 +1,11 @@
 import {
   EditorWebComponent,
-  plugins,
-  Plugin,
+  pluginMenuDe,
+  pluginMenuEn,
 } from "@serlo/editor-web-component";
 import { LitElement, html } from "lit";
 
-console.log("plugins", { plugins, Plugin });
+console.log("plugins", { pluginMenuEn, pluginMenuDe });
 customElements.define("serlo-editor", EditorWebComponent);
 
 // const initialExampleState = {
@@ -121,7 +121,7 @@ class TestElement extends LitElement {
   }
 
   updateEditorStateWithInitialPlugin() {
-    const selectedPluginConfig = plugins[this.selectedPlugin];
+    const selectedPluginConfig = pluginMenuDe[this.selectedPlugin];
 
     // Fallback if initialState is not defined for the selected plugin
     const pluginInitialState = selectedPluginConfig?.initialState || {
@@ -157,21 +157,22 @@ class TestElement extends LitElement {
       <button @click=${this.undo.bind(this)}>Undo</button>
       <button @click=${this.redo.bind(this)}>Redo</button>
       <select @change=${this.handlePluginChange.bind(this)}>
-        ${Object.values(plugins).map(
-          ({ type, de: { name } }) => html`
+        ${Object.values(pluginMenuDe).map(
+          ({ type, title }) => html`
             <option value="${type}" ?selected=${type === this.selectedPlugin}>
-              ${name}
+              ${title}
             </option>
           `
         )}
       </select>
-
-      <serlo-editor
-        use-shadow-dom=${!this.isRenderedInShadowRoot}
-        mode=${this.editing ? "write" : "read"}
-        initial-state=${JSON.stringify(this.editorState)}
-        @state-changed=${this.handleStateChange.bind(this)}
-      ></serlo-editor>
+      <div style="margin-top: 20px;">
+        <serlo-editor
+          use-shadow-dom=${!this.isRenderedInShadowRoot}
+          mode=${this.editing ? "write" : "read"}
+          initial-state=${JSON.stringify(this.editorState)}
+          @state-changed=${this.handleStateChange.bind(this)}
+        ></serlo-editor>
+      </div>
     `;
   }
 }
