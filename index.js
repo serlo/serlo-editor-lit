@@ -76,71 +76,72 @@ const initialExampleState = {
 
 class TestElement extends LitElement {
   static properties = {
-    editing: { type: Boolean },
+    editing1: { type: Boolean },
+    editing2: { type: Boolean },
     isRenderedInShadowRoot: true,
-    editorState: { type: Object },
-    selectedPlugin: { type: String },
+    editorState1: { type: Object },
+    editorState2: { type: Object },
+    selectedPlugin1: { type: String },
+    selectedPlugin2: { type: String },
   };
 
   constructor() {
     super();
-    this.editing = false;
-    this.editorState = initialExampleState;
-    this.selectedPlugin = Plugin.Text;
+    this.editing1 = false;
+    this.editing2 = false;
+    this.editorState1 = initialExampleState;
+    this.editorState2 = initialExampleState;
+    this.selectedPlugin1 = Plugin.Text;
+    this.selectedPlugin2 = Plugin.Text;
   }
 
-  // Render in light mode. Override this if you want to render the lit component
-  // and the editor within the Shadow DOM.
   createRenderRoot() {
     this.isRenderedInShadowRoot = false;
     return this;
   }
 
-  getEditor() {
+  getEditor(id) {
     return this.isRenderedInShadowRoot
-      ? this.shadowRoot.querySelector("serlo-editor")
-      : this.querySelector("serlo-editor");
+      ? this.shadowRoot.querySelector(`serlo-editor[id="${id}"]`)
+      : this.querySelector(`serlo-editor[id="${id}"]`);
   }
 
-  writeCurrentEditorState() {
-    const editor = this.getEditor();
+  writeCurrentEditorState(id) {
+    const editor = this.getEditor(id);
     if (editor) {
-      console.log("Current state:", editor.currentState);
-      this.editorState = editor.currentState;
+      console.log(`Current state for editor ${id}:`, editor.currentState);
+      this[`editorState${id}`] = editor.currentState;
     }
   }
 
-  handleStateChange(event) {
-    console.log("Editor state updated:", event.detail);
+  handleStateChange(event, id) {
+    console.log(`Editor ${id} state updated:`, event.detail);
   }
 
-  handlePluginChange(event) {
-    this.selectedPlugin = event.target.value;
-    this.editing = true;
-    this.updateEditorStateWithInitialPlugin();
+  handlePluginChange(event, id) {
+    this[`selectedPlugin${id}`] = event.target.value;
+    this[`editing${id}`] = true;
+    this.updateEditorStateWithInitialPlugin(id);
   }
 
-  updateEditorStateWithInitialPlugin() {
-    const selectedPluginConfig = pluginMenuDe[this.selectedPlugin];
-
-    // Fallback if initialState is not defined for the selected plugin
+  updateEditorStateWithInitialPlugin(id) {
+    const selectedPluginConfig = pluginMenuDe[this[`selectedPlugin${id}`]];
     const pluginInitialState = selectedPluginConfig?.initialState || {
-      plugin: this.selectedPlugin,
+      plugin: this[`selectedPlugin${id}`],
       state: [],
     };
-
-    this.editorState = pluginInitialState;
+    this[`editorState${id}`] = pluginInitialState;
   }
 
-  undo() {
-    const editor = this.getEditor();
+  undo(id) {
+    const editor = this.getEditor(id);
     if (editor && editor.history) {
       editor.history.dispatchUndo();
     }
   }
 
-  redo() {
-    const editor = this.getEditor();
+  redo(id) {
+    const editor = this.getEditor(id);
     if (editor && editor.history) {
       editor.history.dispatchRedo();
     }
@@ -148,31 +149,45 @@ class TestElement extends LitElement {
 
   render() {
     return html`
-      <button @click=${() => (this.editing = !this.editing)}>
-        ${this.editing ? "READ" : "EDIT"}
-      </button>
-      <button @click=${this.writeCurrentEditorState.bind(this)}>
-        Write current State
-      </button>
-      <button @click=${this.undo.bind(this)}>Undo</button>
-      <button @click=${this.redo.bind(this)}>Redo</button>
-      <select @change=${this.handlePluginChange.bind(this)}>
-        ${Object.values(pluginMenuDe).map(
-          ({ type, title }) => html`
-            <option value="${type}" ?selected=${type === this.selectedPlugin}>
-              ${title}
-            </option>
-          `
-        )}
-      </select>
-      <div style="margin-top: 20px;">
-        <serlo-editor
-          use-shadow-dom=${!this.isRenderedInShadowRoot}
-          mode=${this.editing ? "write" : "read"}
-          initial-state=${JSON.stringify(this.editorState)}
-          @state-changed=${this.handleStateChange.bind(this)}
-        ></serlo-editor>
-      </div>
+      ${[1, 2].map(
+        (id) => html`
+          <div>
+            <h2>Editor ${id}</h2>
+            <button
+              @click=${() => (this[`editing${id}`] = !this[`editing${id}`])}
+            >
+              ${this[`editing${id}`] ? "READ" : "EDIT"}
+            </button>
+            <button @click=${() => this.writeCurrentEditorState(id)}>
+              Write current State
+            </button>
+            <button @click=${() => this.undo(id)}>Undo</button>
+            <button @click=${() => this.redo(id)}>Redo</button>
+            <select @change=${(e) => this.handlePluginChange(e, id)}>
+            // Record<pluginid, { initialState, title, type }>
+              ${Object.values(pluginMenuDe).map(
+                ({ type, title }) => html`
+                  <option
+                    value="${type}"
+                    ?selected=${type === this[`selectedPlugin${id}`]}
+                  >
+                    ${title}
+                  </option>
+                `
+              )}
+            </select>
+            <div style="margin-top: 20px;">
+              <serlo-editor
+                id="${id}"
+                use-shadow-dom=${!this.isRenderedInShadowRoot}
+                mode=${this[`editing${id}`] ? "write" : "read"}
+                initial-state=${JSON.stringify(this[`editorState${id}`])}
+                @state-changed=${(e) => this.handleStateChange(e, id)}
+              ></serlo-editor>
+            </div>
+          </div>
+        `
+      )}
     `;
   }
 }
