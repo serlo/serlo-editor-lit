@@ -2,61 +2,13 @@ import {
   EditorWebComponent,
   pluginMenuDe,
   pluginMenuEn,
+  EditorPluginType,
+  defaultPlugins,
 } from "@serlo/editor-web-component";
 import { LitElement, html } from "lit";
 
 console.log("plugins", { pluginMenuEn, pluginMenuDe });
 customElements.define("serlo-editor", EditorWebComponent);
-
-// const initialExampleState = {
-//   plugin: "rows",
-//   state: [
-//     {
-//       plugin: "multimedia",
-//       state: {
-//         explanation: {
-//           plugin: "rows",
-//           state: [
-//             {
-//               plugin: "text",
-//               state: [
-//                 {
-//                   type: "p",
-//                   children: [
-//                     {
-//                       text: "example text",
-//                     },
-//                   ],
-//                 },
-//               ],
-//             },
-//           ],
-//         },
-//         multimedia: {
-//           plugin: "image",
-//           state: {
-//             src: "",
-//             caption: {
-//               plugin: "text",
-//               state: [
-//                 {
-//                   type: "p",
-//                   children: [
-//                     {
-//                       text: "",
-//                     },
-//                   ],
-//                 },
-//               ],
-//             },
-//           },
-//         },
-//         illustrating: true,
-//         width: 50,
-//       },
-//     },
-//   ],
-// };
 
 const initialExampleState = {
   plugin: "rows",
@@ -80,13 +32,16 @@ class TestElement extends LitElement {
     isRenderedInShadowRoot: true,
     editorState: { type: Object },
     selectedPlugin: { type: String },
+    allowedPlugins: { type: Array },
   };
 
   constructor() {
     super();
     this.editing = false;
     this.editorState = initialExampleState;
-    this.selectedPlugin = Plugin.Text;
+    this.selectedPlugin = "text";
+    this.allowedPlugins = defaultPlugins;
+    console.log("DefaultPlugins: ", defaultPlugins);
   }
 
   // Render in light mode. Override this if you want to render the lit component
@@ -107,6 +62,20 @@ class TestElement extends LitElement {
     if (editor) {
       console.log("Current state:", editor.currentState);
       this.editorState = editor.currentState;
+    }
+  }
+
+  // Note that this will only take affect when clicked before the editor is
+  // rendered, as the configs get frozen. See
+  // https://github.com/serlo/frontend/tree/staging/packages/editor-web-component#how-to-disableremove-plugins
+  filterVideoPlugin() {
+    const editor = this.getEditor();
+    if (editor) {
+      const filteredPlugins = this.allowedPlugins.filter(
+        (plugin) => plugin !== EditorPluginType.Video
+      );
+      this.allowedPlugins = filteredPlugins;
+      editor.plugins = filteredPlugins;
     }
   }
 
@@ -165,12 +134,18 @@ class TestElement extends LitElement {
           `
         )}
       </select>
-      <div style="margin-top: 20px;">
+      <button @click=${this.filterVideoPlugin.bind(this)}>
+        Filter Video Plugin
+      </button>
+      <div style="margin-top: 120px;">
         <serlo-editor
           use-shadow-dom=${!this.isRenderedInShadowRoot}
           mode=${this.editing ? "write" : "read"}
           initial-state=${JSON.stringify(this.editorState)}
           @state-changed=${this.handleStateChange.bind(this)}
+          ?isProductionEnvironment=${false}
+          testing-secret=${"VJN8pHhqVj8RtO+TfY2/Ka1JN4JdH/oSOAdPHz5a"}
+          plugins=${JSON.stringify(this.allowedPlugins)}
         ></serlo-editor>
       </div>
     `;
